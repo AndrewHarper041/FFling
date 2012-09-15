@@ -1,11 +1,17 @@
 package com.pennapps.vnd.ffling;
-/*
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.StringTokenizer;
+
 import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.DropboxAPI.DropboxFileInfo;
+import com.dropbox.client2.DropboxAPI.Entry;
 import com.dropbox.client2.android.AndroidAuthSession;
-import com.dropbox.client2.session.AccessTokenPair;
-import com.dropbox.client2.session.AppKeyPair;
-import com.dropbox.client2.session.Session.AccessType;
-*/
+import com.dropbox.client2.exception.DropboxException;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,96 +21,61 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 public class BackgroundService extends Service {
-	
-    private final IBinder mBinder = new LocalBinder();
+
+	private final IBinder mBinder = new LocalBinder();
 	private Context myContext;
-    private NotificationManager mNM;
-    private LocationManager myLocation;
-    private LocationListener locationListener = new MyLocationListener();
-    final static private String APP_KEY = "9znvgiquask661b";
-    final static private String APP_SECRET = "bnk406c2yk82fc8";
-    //final static private AccessType ACCESS_TYPE = AccessType.DROPBOX;
-    // In the class declaration section:
-   //private DropboxAPI<AndroidAuthSession> mDBApi;
+	private NotificationManager mNM;
+	private LocationManager myLocation;
+	private LocationListener locationListener = new MyLocationListener();
+	public DropboxAPI<AndroidAuthSession> mDBApi;
 
-    // Unique Identification Number for the Notification.
-    // We use it on Notification start, and to cancel it.
-    private int NOTIFICATION = 512;
-    
-    @Override
-    public void onCreate() {
-    	myContext = this;
-        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        myLocation = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        final boolean gpsEnabled = myLocation.isProviderEnabled(LocationManager.GPS_PROVIDER);
+	// Unique Identification Number for the Notification.
+	// We use it on Notification start, and to cancel it.
+	private int NOTIFICATION = 512;
 
-        if (!gpsEnabled) {
-            enableLocationSettings();
-        }
-        
-        myLocation.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60, 0, locationListener);
-        /*
-        
-        // And later in some initialization function:
-        AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
-        AndroidAuthSession session = new AndroidAuthSession(appKeys, ACCESS_TYPE);
-        mDBApi = new DropboxAPI<AndroidAuthSession>(session);
-        // MyActivity below should be your activity class name
-        mDBApi.getSession().startAuthentication(BackgroundService.this);
-        
-        if (mDBApi.getSession().authenticationSuccessful()) {
-            try {
-                // MANDATORY call to complete auth.
-                // Sets the access token on the session
-                mDBApi.getSession().finishAuthentication();
+	@Override
+	public void onCreate() {
+		myContext = this;
+		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		myLocation = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		final boolean gpsEnabled = myLocation.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-                AccessTokenPair tokens = mDBApi.getSession().getAccessTokenPair();
-
-                // Provide your own storeKeys to persist the access token pair
-                // A typical way to store tokens is using SharedPreferences
-                //storeKeys(tokens.key, tokens.secret);
-            } catch (IllegalStateException e) {
-                Log.i("DbAuthLog", "Error authenticating", e);
-            }
-        }
-        
-        */
-        
-        showNotification();
-        
-        
-    }
-    
-    private void enableLocationSettings() {
-
-    }
-
-    /**
-     * Class for clients to access.  Because we know this service always
-     * runs in the same process as its clients, we don't need to deal with
-     * IPC.
-     */
-    public class LocalBinder extends Binder {
-        BackgroundService getService() {
-            return BackgroundService.this;
-        }
-    }
-    
-	private final class MyLocationListener implements LocationListener {
-		
-		public void onLocationChanged(Location locFromGps) {
-			Toast.makeText(myContext, locFromGps.toString(), Toast.LENGTH_SHORT).show();
+		if (!gpsEnabled) {
+			enableLocationSettings();
 		}
-		
+
+		myLocation.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60, 0, locationListener);
+
+	}
+
+	private void enableLocationSettings() {
+
+	}
+
+	/**
+	 * Class for clients to access. Because we know this service always runs in
+	 * the same process as its clients, we don't need to deal with IPC.
+	 */
+	public class LocalBinder extends Binder {
+		BackgroundService getService() {
+			return BackgroundService.this;
+		}
+	}
+
+	private final class MyLocationListener implements LocationListener {
+
+		public void onLocationChanged(Location locFromGps) {
+			//Log.i("DbAuthLog", "Getting updates!", null);
+			//sendBroadcast(new Intent("CHANGE"));
+			getShitDone();
+		}
+
 		public void onProviderDisabled(String provider) {
 
 		}
@@ -118,41 +89,76 @@ public class BackgroundService extends Service {
 		}
 
 	}
-    
 
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		return START_STICKY;
+	}
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_STICKY;
-    }
+	@Override
+	public void onDestroy() {
 
-    @Override
-    public void onDestroy() {
+	}
 
-    }
+	@Override
+	public IBinder onBind(Intent intent) {
+		return mBinder;
+	}
+	
+	public void getShitDone() {
+		try {
+			Entry secretList = mDBApi.metadata("/", 0, null, true, null);
+			Log.i("DbExampleLog", secretList.contents.toString());
+			for (int i = 0; i < secretList.contents.size(); i = i + 1) {
+				if (!secretList.contents.get(i).fileName().equalsIgnoreCase("Public") && !secretList.contents.get(i).fileName().equalsIgnoreCase("Photos")) {
+					String filename = secretList.contents.get(i).fileName();
+					StringTokenizer st = new StringTokenizer(filename, "~");
+					double TempLat = Double.parseDouble(st.nextToken());
+					double TempLong = Double.parseDouble(st.nextToken());
+					Location tempPos = new Location("placeholder");
+					tempPos.setLatitude(TempLat);
+					tempPos.setLongitude(TempLong);
+					// if (locFromGps.distanceTo(tempPos) < DROPPOINT_DISTANCE)
+					// {
+					if (true) {
+						// Get file.
+						FileOutputStream outputStream = null;
+						try {
+							File file = new File("/mnt/sdcard/" + secretList.contents.get(i).fileName() + ".txt");
+							outputStream = new FileOutputStream(file);
+							DropboxFileInfo info = mDBApi.getFile("/" + secretList.contents.get(i).fileName(), null, outputStream, null);
+							Log.i("DbExampleLog", "The file's rev is: " + info.getMetadata().rev);
+							// /path/to/new/file.txt now has stuff in it.
+						} catch (DropboxException e) {
+							Log.e("DbExampleLog",
+									"Something went wrong while downloading.");
+						} catch (FileNotFoundException e) {
+							Log.e("DbExampleLog", "File not found.");
+						} finally {
+							if (outputStream != null) {
+								try {
+									outputStream.close();
+								} catch (IOException e) {
+								}
+							}
+						}
+					}
+				}
+			}
+		} catch (DropboxException e) {
+			Log.e("DbExampleLog",
+					"Something went wrong while getting metadata.");
+		}
+	}
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mBinder;
-    }
-
-    /**
-     * Show a notification while this service is running.
-     */
-    private void showNotification() {
-        // In this sample, we'll use the same text for the ticker and the expanded notification
-        CharSequence text = getText(R.string.connected);
-
-        // Set the icon, scrolling text and timestamp
-        Notification notification = new Notification(R.drawable.ic_launcher, text, System.currentTimeMillis());
-
-        // The PendingIntent to launch our activity if the user selects this notification
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
-
-        // Set the info for the views that show in the notification panel.
-        notification.setLatestEventInfo(this, getText(R.string.connected),text, contentIntent);
-
-        // Send the notification.
-        mNM.notify(NOTIFICATION, notification);
-    }
+	/**
+	 * Show a notification whenever we decide to.
+	 */
+	private void showNotification() {
+		CharSequence text = getText(R.string.connected);
+		Notification notification = new Notification(R.drawable.ic_launcher, text, System.currentTimeMillis());
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+		notification.setLatestEventInfo(this, getText(R.string.connected), text, contentIntent);
+		mNM.notify(NOTIFICATION, notification);
+	}
 }
