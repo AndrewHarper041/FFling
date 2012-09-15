@@ -1,5 +1,11 @@
 package com.pennapps.vnd.ffling;
-
+/*
+import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.android.AndroidAuthSession;
+import com.dropbox.client2.session.AccessTokenPair;
+import com.dropbox.client2.session.AppKeyPair;
+import com.dropbox.client2.session.Session.AccessType;
+*/
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -24,6 +30,11 @@ public class BackgroundService extends Service {
     private NotificationManager mNM;
     private LocationManager myLocation;
     private LocationListener locationListener = new MyLocationListener();
+    final static private String APP_KEY = "9znvgiquask661b";
+    final static private String APP_SECRET = "bnk406c2yk82fc8";
+    //final static private AccessType ACCESS_TYPE = AccessType.DROPBOX;
+    // In the class declaration section:
+   //private DropboxAPI<AndroidAuthSession> mDBApi;
 
     // Unique Identification Number for the Notification.
     // We use it on Notification start, and to cancel it.
@@ -41,7 +52,36 @@ public class BackgroundService extends Service {
         }
         
         myLocation.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60, 0, locationListener);
-        showNotification();     
+        /*
+        
+        // And later in some initialization function:
+        AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
+        AndroidAuthSession session = new AndroidAuthSession(appKeys, ACCESS_TYPE);
+        mDBApi = new DropboxAPI<AndroidAuthSession>(session);
+        // MyActivity below should be your activity class name
+        mDBApi.getSession().startAuthentication(BackgroundService.this);
+        
+        if (mDBApi.getSession().authenticationSuccessful()) {
+            try {
+                // MANDATORY call to complete auth.
+                // Sets the access token on the session
+                mDBApi.getSession().finishAuthentication();
+
+                AccessTokenPair tokens = mDBApi.getSession().getAccessTokenPair();
+
+                // Provide your own storeKeys to persist the access token pair
+                // A typical way to store tokens is using SharedPreferences
+                //storeKeys(tokens.key, tokens.secret);
+            } catch (IllegalStateException e) {
+                Log.i("DbAuthLog", "Error authenticating", e);
+            }
+        }
+        
+        */
+        
+        showNotification();
+        
+        
     }
     
     private void enableLocationSettings() {
