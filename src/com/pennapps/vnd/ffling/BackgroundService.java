@@ -34,7 +34,8 @@ public class BackgroundService extends Service {
 	private LocationManager myLocation;
 	private LocationListener locationListener = new MyLocationListener();
 	public DropboxAPI<AndroidAuthSession> mDBApi;
-
+	private Entry secretList;
+	
 	// Unique Identification Number for the Notification.
 	// We use it on Notification start, and to cancel it.
 	private int NOTIFICATION = 512;
@@ -51,7 +52,6 @@ public class BackgroundService extends Service {
 		}
 
 		myLocation.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60, 0, locationListener);
-
 	}
 
 	private void enableLocationSettings() {
@@ -107,7 +107,7 @@ public class BackgroundService extends Service {
 	
 	public void getShitDone() {		//hi
 		try {
-			Entry secretList = mDBApi.metadata("/", 0, null, true, null);
+			secretList = mDBApi.metadata("/", 0, null, true, null);
 			Log.i("DbExampleLog", secretList.contents.toString());
 			for (int i = 0; i < secretList.contents.size(); i = i + 1) {
 				if (!secretList.contents.get(i).fileName().equalsIgnoreCase("Public") && !secretList.contents.get(i).fileName().equalsIgnoreCase("Photos")) {
@@ -160,5 +160,9 @@ public class BackgroundService extends Service {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
 		notification.setLatestEventInfo(this, getText(R.string.connected), text, contentIntent);
 		mNM.notify(NOTIFICATION, notification);
+	}
+	
+	public Entry getList(){
+		return secretList;
 	}
 }

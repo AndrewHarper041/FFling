@@ -2,7 +2,9 @@
     package="com.pennapps.vnd.ffling"
     android:versionCode="1"
     android:versionName="1.0" >
-
+    
+	<uses-permission android:name="android.permission.INTERNET"/>
+	
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="8" />
@@ -16,6 +18,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <uses-library android:name="com.google.android.maps"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" >
@@ -25,7 +28,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+         <activity
+            android:name=".MapDemo"
+            android:label="@string/title_MapDemo">
+        </activity>
 
         <activity
             android:name="com.dropbox.client2.android.AuthActivity"
@@ -42,7 +48,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
+		<activity android:name=".HelloGoogleMaps" android:label="@string/app_name"
+     		android:theme="@android:style/Theme.NoTitleBar">
+        </activity>
         <service
             android:name=".BackgroundService"
             android:enabled="true" />

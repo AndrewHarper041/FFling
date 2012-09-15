@@ -3,12 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/buttonMail"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Mail" 
+            android:onClick="goTo">
+        </Button>
+
+        <Button
+            android:id="@+id/buttonMap"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Map"
+            android:onClick="goTo" >
+        </Button>
+    </LinearLayout>
+
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/buttonNew"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout1"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="Button" />
+        android:layout_marginTop="88dp"
+        android:text="Send"
+        android:onClick="goTo"/>
 
 </RelativeLayout>
