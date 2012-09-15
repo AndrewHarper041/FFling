@@ -33,7 +33,8 @@ public class MainActivity extends Activity {
 
 	/*
 	 * Only here in case we need it later
-	
+	  --implement only in the map frame, other frames do not need it.
+	  
 	private class LocationUpdateReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -51,7 +52,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		mainContext = this;
-		Button testButton = (Button) findViewById(R.id.button1);
+		Button testButton = (Button) findViewById(R.id.buttonNew);
 		testButton.setOnClickListener(mCorkyListener);
 
 		AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
@@ -126,6 +127,19 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	public void goTo(View view){
+		Intent myIntent = new Intent();
+		switch (view.getId()){
+			//case	R.id.buttonMail: myIntent = new Intent(view.getContext(), )
+			//		break;
+			case	R.id.buttonMap: myIntent = new Intent(view.getContext(), MapDemo.class);
+					break;
+			case	R.id.buttonNew: sendBroadcast(new Intent("SEND"));
+					break;
+		}
+		startActivityForResult(myIntent, 0);
+	}
+	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
