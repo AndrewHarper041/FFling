@@ -105,7 +105,7 @@ public class BackgroundService extends Service {
 		return mBinder;
 	}
 	
-	public void getShitDone() {
+	public void getShitDone() {		//hi
 		try {
 			Entry secretList = mDBApi.metadata("/", 0, null, true, null);
 			Log.i("DbExampleLog", secretList.contents.toString());
