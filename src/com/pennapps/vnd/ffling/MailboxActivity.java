@@ -1,5 +1,6 @@
 package com.pennapps.vnd.ffling;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import com.dropbox.client2.DropboxAPI;
@@ -49,9 +50,14 @@ public class MailboxActivity extends ListActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mailbox);        
         inbox = new ArrayList<Message>();
-        inbox.add(new Message("first", "hello world", "Java", "12:12:12", "1"));
-        inbox.add(new Message("second", "hello world", "Java", "12:12:12", "1"));
-
+        
+        File directory = new File("/mnt/sdcard/Android/data/com.pennapps.vnd.ffling/");
+        String[] children = directory.list();
+        for (int i = 0; i < children.length; i = i + 1) {
+        	ArrayList<Message> Temp = (MyFileReader.getWholeFile("/mnt/sdcard/Android/data/com.pennapps.vnd.ffling/" + children[i]));
+        	inbox.add(Temp.get(0));
+        }
+        
         setListAdapter(new ArrayAdapter<Message>(this, android.R.layout.simple_expandable_list_item_1, inbox));
         selected = (TextView)findViewById(R.id.textViewMail);
 	}

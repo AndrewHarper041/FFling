@@ -126,7 +126,7 @@ public class Message {
 	}
 	
 	public String toString(){
-		return "Subject: " + subject + " Radius: " + radius;
+		return subject;
 	}
 
 }
