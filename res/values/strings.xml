@@ -1,0 +1,14 @@
+<resources>
+
+    <string name="app_name">Ffling</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="connected">connected</string>
+    <string name="disconnected">disconnected</string>
+    <string name="title_MapDemo">MapDemo</string>
+    <string name="title_login">Login</string>
+    <string name="title_activity_mailbox">MailboxActivity</string>
+    <string name="title_activity_something_good">MainActivity</string>
+
+</resources>
