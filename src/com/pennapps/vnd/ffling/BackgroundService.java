@@ -54,6 +54,9 @@ public class BackgroundService extends Service {
 			enableLocationSettings();
 		}
 
+		File directories = new File("/mnt/sdcard/Android/data/com.pennapps.vnd.ffling");
+		if (!directories.exists()) directories.mkdirs();
+		
 		myLocation.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60, 0, locationListener);
 	}
 
@@ -127,7 +130,7 @@ public class BackgroundService extends Service {
 						// Get file.
 						FileOutputStream outputStream = null;
 						try {
-							File file = new File("/mnt/sdcard/" + secretList.contents.get(i).fileName() + ".txt");
+							File file = new File("/mnt/sdcard/Android/data/com.pennapps.vnd.ffling/" + secretList.contents.get(i).fileName() + ".txt");
 							outputStream = new FileOutputStream(file);
 							DropboxFileInfo info = mDBApi.getFile("/" + secretList.contents.get(i).fileName(), null, outputStream, null);
 							Log.i("DbExampleLog", "The file's rev is: " + info.getMetadata().rev);
