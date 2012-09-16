@@ -31,8 +31,8 @@ public class MapDemo extends MapActivity {
     private List<Overlay> mapOverlays;
     private static final int latitudeE6 = 37985339;
     private static final int longitudeE6 = 23716735;
-    private int userLat = 37985339;
-    private int userLong = 23716735;
+    private int userLat = 38000000;
+    private int userLong = 97000000;
     private MapController mapController;
     private ArrayList<Location> nearby;
     
@@ -40,6 +40,8 @@ public class MapDemo extends MapActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			System.out.println("msg received!");
+			nearby.clear();
+			
 			Log.i("DbAuthLog", "Receiving intents!", null);
 			ArrayList <String> strs = getIntent().getStringArrayListExtra("stock_list");
 			for(String str: strs){
@@ -50,6 +52,7 @@ public class MapDemo extends MapActivity {
 				tempLoc.setLatitude(TempLat);
 				tempLoc.setLongitude(TempLong);
 				nearby.add(tempLoc);
+				refreshMap();
 			}
 		}
 	}
@@ -72,22 +75,36 @@ public class MapDemo extends MapActivity {
         
         //creates the overlay
         mapOverlays = mapView.getOverlays();
-        Drawable drawable = this.getResources().getDrawable(R.drawable.icon);
-        CustomItemizedOverlay itemizedOverlay = 
-             new CustomItemizedOverlay(drawable, this){
-        	@Override
-			protected boolean onTap(int index){
-        		processTap(index);
-        		return true;
-        	}
-        };
+        
+        refreshMap();
         //will be implemented in another method ie. run
+       
+    }
+        
+    public void refreshMap(){
+    	 Drawable drawable = this.getResources().getDrawable(R.drawable.icon);
+         CustomItemizedOverlay itemizedOverlay = 
+              new CustomItemizedOverlay(drawable, this){
+         	@Override
+ 			protected boolean onTap(int index){
+         		processTap(index);
+         		return true;
+         	}
+         };
+                new CustomItemizedOverlay(drawable, this){
+           	@Override
+   			protected boolean onTap(int index){
+           		processTap(index);
+           		return true;
+           	}
+           };
+    	mapOverlays.clear();
+    	for(Location loc : nearby){
+        	 NotePreview noteTemp = new NotePreview((int)(loc.getLatitude()*1000000), (int)(loc.getLongitude()*100000000), "Location:", loc.getLatitude() + ", " +loc.getLatitude());
+        	 itemizedOverlay.addOverlay(noteTemp);
+        }
         GeoPoint point = new GeoPoint(latitudeE6, longitudeE6);	//to be gotten from filename
-        //going to have to loop these
-        NotePreview note1 = new NotePreview(latitudeE6, longitudeE6, "It Works!", "hello!");
-        NotePreview note2 = new NotePreview(latitudeE6+400, longitudeE6+400, "But will it blend?", "goodbye!");
-        itemizedOverlay.addOverlay(note1);
-        itemizedOverlay.addOverlay(note2);
+
         mapOverlays.add(itemizedOverlay);
         
         mapController = mapView.getController();
@@ -95,7 +112,8 @@ public class MapDemo extends MapActivity {
         mapController.animateTo(point);		//moves map center to point
         mapController.setZoom(20);
     }
-        
+    
+    
     public void processTap(int index){
     	CustomItemizedOverlay itemOverlay = (CustomItemizedOverlay) mapOverlays.get(0);	//only object is the ItemizedOverlay
     	OverlayItem item = itemOverlay.getItem(index);
