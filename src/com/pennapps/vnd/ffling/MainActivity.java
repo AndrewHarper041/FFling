@@ -133,8 +133,8 @@ public class MainActivity extends Activity {
 					break;
 			case	R.id.buttonMap: myIntent = new Intent(view.getContext(), MapDemo.class);
 					break;
-			//case	R.id.buttonNew: sendBroadcast(new Intent("SEND"));
-			//		break;
+			case	R.id.buttonNew: myIntent = new Intent(view.getContext(), SomethingGoodActivity.class);
+					break;
 		}
 		startActivityForResult(myIntent, 0);
 	}

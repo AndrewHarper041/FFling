@@ -28,6 +28,13 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import org.json.JSONObject;
+
+import com.facebook.android.DialogError;
+import com.facebook.android.Facebook;
+import com.facebook.android.FacebookError;
+import com.facebook.android.Facebook.DialogListener;
+
 public class BackgroundService extends Service {
 
 	private final IBinder mBinder = new LocalBinder();
@@ -160,11 +167,21 @@ public class BackgroundService extends Service {
 	public void postaholic(String filePathToPost) {
 		FileInputStream inputStream = null;
 		try {
+			
+			
+			String parsed;
+			int index;
+			
+			//Possible bug is here if i fucked up
+			parsed = (filePathToPost.substring(filePathToPost.lastIndexOf("/"), filePathToPost.length()-4));
+			
+					
 			File file = new File(filePathToPost);
 			inputStream = new FileInputStream(file);
-			Entry newEntry = mDBApi.putFile("/testing.txt", inputStream,
-					file.length(), null, null);
+			Entry newEntry = mDBApi.putFile("/" + parsed, inputStream, file.length(), null, null);
 			Log.i("DbExampleLog", "The uploaded file's rev is: " + newEntry.rev);
+			
+
 		} catch (DropboxUnlinkedException e) {
 			Log.e("DbExampleLog", "User has unlinked.");
 		} catch (DropboxException e) {
