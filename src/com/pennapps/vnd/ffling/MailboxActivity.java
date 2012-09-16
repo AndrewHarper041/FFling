@@ -65,7 +65,12 @@ public class MailboxActivity extends ListActivity{
 	@Override
 	public void onListItemClick(ListView l, View view, int position, long id){
 		view.getId();
+		
+		
+		
 		Intent myIntent = new Intent(view.getContext(), SomethingGoodActivity.class);
+		myIntent.putExtra("file", "/mnt/sdcard/Android/data/com.pennapps.vnd.ffling/" + inbox.get(position-1).getLatitude() + "~" + inbox.get(position-1).getLongitude() +".txt");
+		
 		startActivityForResult(myIntent, 0);
 	}
 	
