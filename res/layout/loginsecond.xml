@@ -3,12 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/sky" />
+
     <Button
         android:id="@+id/buttonlog2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="Button" />
+        android:background="@drawable/button_normal"
+        android:onClick="goTo"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:text="Button"
+        android:textColor="#ffffffff"
+        android:textStyle="bold" />
 
 </RelativeLayout>
