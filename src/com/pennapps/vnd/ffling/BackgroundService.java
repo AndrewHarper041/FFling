@@ -1,6 +1,7 @@
 package com.pennapps.vnd.ffling;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import com.dropbox.client2.DropboxAPI.DropboxFileInfo;
 import com.dropbox.client2.DropboxAPI.Entry;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
+import com.dropbox.client2.exception.DropboxUnlinkedException;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -35,6 +37,7 @@ public class BackgroundService extends Service {
 	private LocationListener locationListener = new MyLocationListener();
 	public DropboxAPI<AndroidAuthSession> mDBApi;
 	private Entry secretList;
+	private float DROPPOINT_DISTANCE = 10;
 	
 	// Unique Identification Number for the Notification.
 	// We use it on Notification start, and to cancel it.
@@ -51,6 +54,9 @@ public class BackgroundService extends Service {
 			enableLocationSettings();
 		}
 
+		File directories = new File("/mnt/sdcard/Android/data/com.pennapps.vnd.ffling");
+		if (!directories.exists()) directories.mkdirs();
+		
 		myLocation.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60, 0, locationListener);
 	}
 
@@ -105,7 +111,7 @@ public class BackgroundService extends Service {
 		return mBinder;
 	}
 	
-	public void getShitDone() {		//hi
+	public void getShitDone() {
 		try {
 			secretList = mDBApi.metadata("/", 0, null, true, null);
 			Log.i("DbExampleLog", secretList.contents.toString());
@@ -118,17 +124,17 @@ public class BackgroundService extends Service {
 					Location tempPos = new Location("placeholder");
 					tempPos.setLatitude(TempLat);
 					tempPos.setLongitude(TempLong);
-					// if (locFromGps.distanceTo(tempPos) < DROPPOINT_DISTANCE)
-					// {
-					if (true) {
+					if (myLocation.getLastKnownLocation(LocationManager.GPS_PROVIDER).distanceTo(tempPos) < DROPPOINT_DISTANCE)
+					{
+					//if (true) {
 						// Get file.
 						FileOutputStream outputStream = null;
 						try {
-							File file = new File("/mnt/sdcard/" + secretList.contents.get(i).fileName() + ".txt");
+							File file = new File("/mnt/sdcard/Android/data/com.pennapps.vnd.ffling/" + secretList.contents.get(i).fileName() + ".txt");
 							outputStream = new FileOutputStream(file);
 							DropboxFileInfo info = mDBApi.getFile("/" + secretList.contents.get(i).fileName(), null, outputStream, null);
 							Log.i("DbExampleLog", "The file's rev is: " + info.getMetadata().rev);
-							// /path/to/new/file.txt now has stuff in it.
+							mDBApi.delete("/" + secretList.contents.get(i).fileName());
 						} catch (DropboxException e) {
 							Log.e("DbExampleLog",
 									"Something went wrong while downloading.");
@@ -148,6 +154,30 @@ public class BackgroundService extends Service {
 		} catch (DropboxException e) {
 			Log.e("DbExampleLog",
 					"Something went wrong while getting metadata.");
+		}
+	}
+	
+	public void postaholic(String filePathToPost) {
+		FileInputStream inputStream = null;
+		try {
+			File file = new File(filePathToPost);
+			inputStream = new FileInputStream(file);
+			Entry newEntry = mDBApi.putFile("/testing.txt", inputStream,
+					file.length(), null, null);
+			Log.i("DbExampleLog", "The uploaded file's rev is: " + newEntry.rev);
+		} catch (DropboxUnlinkedException e) {
+			Log.e("DbExampleLog", "User has unlinked.");
+		} catch (DropboxException e) {
+			Log.e("DbExampleLog", "Something went wrong while uploading.");
+		} catch (FileNotFoundException e) {
+			Log.e("DbExampleLog", "File not found.");
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+				}
+			}
 		}
 	}
 
