@@ -3,39 +3,77 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <ImageView
+        android:id="@+id/sky"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/sky" />
+
     <LinearLayout
-        android:id="@+id/linearLayout1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/buttonMail"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Mail" 
-            android:onClick="goTo">
-        </Button>
-
-        <Button
-            android:id="@+id/buttonMap"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Map"
-            android:onClick="goTo" >
-        </Button>
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/buttonNew"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="88dp"
-        android:text="Send"
-        android:onClick="goTo"/>
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/airplane" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp" >
+
+            <Button
+                android:id="@+id/buttonMail"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_normal"
+                android:onClick="goTo"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:text="Mail"
+                android:textColor="#ffffffff"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/buttonNew"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_normal"
+                android:onClick="goTo"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:text="Send"
+                android:textColor="#ffffffff"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/buttonMap"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_normal"
+                android:onClick="goTo"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:text="Map"
+                android:textColor="#ffffffff"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>
