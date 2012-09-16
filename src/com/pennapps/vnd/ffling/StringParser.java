@@ -1,4 +1,4 @@
-package StringAlgorithms;
+package com.pennapps.vnd.ffling;
 
 public class StringParser {
 	private String parsedLine = new String();

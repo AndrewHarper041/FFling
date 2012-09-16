@@ -1,4 +1,4 @@
-package StringAlgorithms;
+package com.pennapps.vnd.ffling;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

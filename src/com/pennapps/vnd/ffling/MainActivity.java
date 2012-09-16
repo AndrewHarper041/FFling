@@ -57,8 +57,8 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		mainContext = this;
-		Button testButton = (Button) findViewById(R.id.buttonNew);
-		testButton.setOnClickListener(mCorkyListener);
+		//Button testButton = (Button) findViewById(R.id.buttonNew);
+		//testButton.setOnClickListener(mCorkyListener);
 	}
 
 	private OnClickListener mCorkyListener = new OnClickListener() {

@@ -1,6 +1,5 @@
 package com.pennapps.vnd.ffling;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.facebook.android.Facebook;
@@ -28,7 +27,8 @@ public class SomethingGoodActivity extends Activity {
 	public static final String mAPP_ID = "207372532726150";
 	public Facebook mFacebook = new Facebook(mAPP_ID);
 	
-	Time blah = new Time();
+	Time now = new Time();
+	
 	
 	public double longitude;
 	public double lattitude;
@@ -60,9 +60,11 @@ public class SomethingGoodActivity extends Activity {
 				facebookID = json.getString("id");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
+				facebookID = "";
 				e.printStackTrace();
 			} catch (FacebookError e) {
 				// TODO Auto-generated catch block
+				facebookID = "";
 				e.printStackTrace();
 			}
 	    	
@@ -73,17 +75,18 @@ public class SomethingGoodActivity extends Activity {
 	    	longitude = location.getLongitude();
 	    	lattitude = location.getLatitude();
 	    	
-	    	time = blah.toString();
+	    	now.setToNow();
 	    	
-	    	subject = mySubject.toString();
-	    	textMessage = kiss.toString();
+	    	
+	    	subject = String.valueOf(mySubject.getText());
+	    	textMessage = String.valueOf(kiss.getText());
 	    	
 	    	radius = "15";
 	    	
 			FileCreator fc = new FileCreator(path);
-			Message m = new Message(facebookID, time, String.valueOf(lattitude), String.valueOf(longitude), textMessage, subject, radius);
+			Message m = new Message(facebookID, now.toString(), String.valueOf(lattitude), String.valueOf(longitude), textMessage, subject, radius);
 			
-			String newPath = fc.createNewPaperAirplane(radius, subject, textMessage);
+			String newPath = fc.createNewPaperAirplane(radius, subject, m);
 	    }
 	};
 	

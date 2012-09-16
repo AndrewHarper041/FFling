@@ -1,4 +1,4 @@
-package StringAlgorithms;
+package com.pennapps.vnd.ffling;
 
 import java.util.ArrayList;
 
@@ -17,13 +17,13 @@ public class FileCreator {
 			String latitude,
 			String longitude,
 			String comments){
-		oldFileText = "Properties: " + radius + "~" + "Subject: " + subject + "\n";
+		oldFileText = "Properties: " + radius + "~~~" + "Subject: " + subject + "\n";
 		StringParser a = new StringParser();
 		String newFileText = oldFileText + a.createParsedString(username, timestamp, 
 				latitude, longitude, comments, 1);
 		String newFileName = createFileNameFromCoordinates(latitude, longitude);
-		String directory = parseDirectoryPath(this.destination);
-		return MyFileWriter.createFile(newFileName, directory, newFileText);
+		//String directory = parseDirectoryPath(this.destination);
+		return MyFileWriter.createFile(newFileName, this.destination, newFileText);
 	}
 	
 	public String createNewPaperAirplane(String radius, String fileSubject, 

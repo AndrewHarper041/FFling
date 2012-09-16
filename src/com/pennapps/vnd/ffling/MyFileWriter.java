@@ -1,4 +1,4 @@
-package StringAlgorithms;
+package com.pennapps.vnd.ffling;
 
 import java.io.FileWriter;
 import java.io.IOException;
