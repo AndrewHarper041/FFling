@@ -1,5 +1,8 @@
 package com.pennapps.vnd.ffling;
 
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
 import org.json.JSONObject;
 
 import com.facebook.android.Facebook;
@@ -9,7 +12,10 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,7 +35,9 @@ public class SomethingGoodActivity extends Activity {
 	
 	Time now = new Time();
 	
+	private ArrayList<Message> wholeThing = new ArrayList<Message>();
 	
+	private String filepath;
 	public double longitude;
 	public double lattitude;
 	public String time;
@@ -38,7 +46,16 @@ public class SomethingGoodActivity extends Activity {
 	public String radius;
 	public String path = "/mnt/sdcard/Android/data/com.pennapps.vnd.FFling/";
 	
-	
+	private class LocationUpdateReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			System.out.println("msg received!");
+			
+			Log.i("DbAuthLog", "Receiving intents!", null);
+			filepath = getIntent().getStringExtra("file");
+			wholeThing = MyFileReader.getWholeFile(filepath);
+		}
+	}
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,11 +76,9 @@ public class SomethingGoodActivity extends Activity {
 	    		JSONObject json = Util.parseJson(mFacebook.request("me"));
 				facebookID = json.getString("id");
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				facebookID = "";
 				e.printStackTrace();
 			} catch (FacebookError e) {
-				// TODO Auto-generated catch block
 				facebookID = "";
 				e.printStackTrace();
 			}
@@ -89,6 +104,10 @@ public class SomethingGoodActivity extends Activity {
 			String newPath = fc.createNewPaperAirplane(radius, subject, m);
 	    }
 	};
+	
+	private String getMessage(){
+		
+	}
 	
 	private OnClickListener theCancelListener = new OnClickListener() {
 	    public void onClick(View v) {
