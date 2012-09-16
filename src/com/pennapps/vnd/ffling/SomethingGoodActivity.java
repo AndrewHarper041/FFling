@@ -8,13 +8,18 @@ import com.facebook.android.FacebookError;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Button;
+import android.widget.Toast;
 import android.text.format.*;
 
 public class SomethingGoodActivity extends Activity {
@@ -37,8 +42,7 @@ public class SomethingGoodActivity extends Activity {
 	public String subject;
 	public String radius;
 	public String path = "/mnt/sdcard/Android/data/com.pennapps.vnd.FFling/";
-	
-	
+
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +91,12 @@ public class SomethingGoodActivity extends Activity {
 			Message m = new Message(facebookID, now.toString(), String.valueOf(lattitude), String.valueOf(longitude), textMessage, subject, radius);
 			
 			String newPath = fc.createNewPaperAirplane(radius, subject, m);
+			
+			Intent resultPath = new Intent();
+			resultPath.putExtra("filepath", newPath);
+			setResult(666, resultPath);
+			finish();
+			
 	    }
 	};
 	

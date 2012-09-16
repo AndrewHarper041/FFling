@@ -134,6 +134,7 @@ public class MainActivity extends Activity {
 			case	R.id.buttonMap: myIntent = new Intent(view.getContext(), MapDemo.class);
 					break;
 			case	R.id.buttonNew: myIntent = new Intent(view.getContext(), SomethingGoodActivity.class);
+					//myIntent.putExtra("service", mBoundService);
 					break;
 		}
 		startActivityForResult(myIntent, 0);
@@ -144,4 +145,14 @@ public class MainActivity extends Activity {
 		super.onDestroy();
 		doUnbindService();
 	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		      if (resultCode == 666) {
+		        mBoundService.postaholic(data.getStringExtra("filepath"));
+		      }
+		}
+	
 }
+
+
