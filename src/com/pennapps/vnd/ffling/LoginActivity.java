@@ -20,7 +20,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class LoginActivity extends Activity {
 
 	private boolean mIsBound = false;
 	private BackgroundService mBoundService;
@@ -33,8 +33,7 @@ public class MainActivity extends Activity {
 
 	/*
 	 * Only here in case we need it later
-	  --implement only in the map frame, other frames do not need it.
-	  
+	
 	private class LocationUpdateReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -49,18 +48,19 @@ public class MainActivity extends Activity {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
-		AndroidAuthSession session = new AndroidAuthSession(appKeys, ACCESS_TYPE);
-		mDBApi = new DropboxAPI<AndroidAuthSession>(session);
-		mDBApi.getSession().startAuthentication(MainActivity.this);
-		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		mainContext = this;
-		Button testButton = (Button) findViewById(R.id.buttonNew);
+		Button testButton = (Button) findViewById(R.id.buttonlog2);
 		testButton.setOnClickListener(mCorkyListener);
-	}
 
+		AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
+		AndroidAuthSession session = new AndroidAuthSession(appKeys, ACCESS_TYPE);
+		mDBApi = new DropboxAPI<AndroidAuthSession>(session);
+		mDBApi.getSession().startAuthentication(LoginActivity.this);
+
+	}
+	
 	private OnClickListener mCorkyListener = new OnClickListener() {
 	    public void onClick(View v) {
 	      mBoundService.getShitDone();
@@ -126,19 +126,6 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	public void goTo(View view){
-		Intent myIntent = new Intent();
-		switch (view.getId()){
-			//case	R.id.buttonMail: myIntent = new Intent(view.getContext(), )
-			//		break;
-			case	R.id.buttonMap: myIntent = new Intent(view.getContext(), MapDemo.class);
-					break;
-			case	R.id.buttonNew: sendBroadcast(new Intent("SEND"));
-					break;
-		}
-		startActivityForResult(myIntent, 0);
-	}
-	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

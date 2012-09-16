@@ -7,5 +7,6 @@
 	<string name="connected">connected</string>
 	<string name="disconnected">disconnected</string>
 	<string name="title_MapDemo">MapDemo</string>
+	<string name="title_login">Login</string>
 	
 </resources>
