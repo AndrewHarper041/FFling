@@ -36,7 +36,10 @@
             android:name=".MapDemo"
             android:label="@string/title_MapDemo">
         </activity>
-
+		<activity
+            android:name=".MailboxActivity"
+            android:label="@string/title_activity_mailbox">
+        </activity>	
         <activity
             android:name="com.dropbox.client2.android.AuthActivity"
             android:configChanges="orientation|keyboard"

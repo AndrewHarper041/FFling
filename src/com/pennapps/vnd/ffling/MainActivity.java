@@ -129,12 +129,12 @@ public class MainActivity extends Activity {
 	public void goTo(View view){
 		Intent myIntent = new Intent();
 		switch (view.getId()){
-			//case	R.id.buttonMail: myIntent = new Intent(view.getContext(), )
-			//		break;
+			case	R.id.buttonMail: myIntent = new Intent(view.getContext(), MailboxActivity.class);
+					break;
 			case	R.id.buttonMap: myIntent = new Intent(view.getContext(), MapDemo.class);
 					break;
-			case	R.id.buttonNew: sendBroadcast(new Intent("SEND"));
-					break;
+			//case	R.id.buttonNew: sendBroadcast(new Intent("SEND"));
+			//		break;
 		}
 		startActivityForResult(myIntent, 0);
 	}
