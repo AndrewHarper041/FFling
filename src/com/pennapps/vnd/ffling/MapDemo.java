@@ -1,6 +1,8 @@
 package com.pennapps.vnd.ffling;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -31,7 +34,25 @@ public class MapDemo extends MapActivity {
     private int userLat = 37985339;
     private int userLong = 23716735;
     private MapController mapController;
+    private ArrayList<Location> nearby;
     
+    private class LocationUpdateReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			System.out.println("msg received!");
+			Log.i("DbAuthLog", "Receiving intents!", null);
+			ArrayList <String> strs = getIntent().getStringArrayListExtra("stock_list");
+			for(String str: strs){
+				StringTokenizer st = new StringTokenizer(str, ", ");
+				int TempLat = (int)(Double.parseDouble(st.nextToken())*14);
+				int TempLong = (int)(Double.parseDouble(st.nextToken())*14);
+				Location tempLoc = new Location("");
+				tempLoc.setLatitude(TempLat);
+				tempLoc.setLongitude(TempLong);
+				nearby.add(tempLoc);
+			}
+		}
+	}
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +67,8 @@ public class MapDemo extends MapActivity {
         //sets center
        // MapController myMapController = mapView.getController();
         //myMapController.setCenter(new GeoPoint(userLat, userLong));
+        
+        nearby = new ArrayList<Location>();
         
         //creates the overlay
         mapOverlays = mapView.getOverlays();
@@ -72,7 +95,7 @@ public class MapDemo extends MapActivity {
         mapController.animateTo(point);		//moves map center to point
         mapController.setZoom(20);
     }
-    
+        
     public void processTap(int index){
     	CustomItemizedOverlay itemOverlay = (CustomItemizedOverlay) mapOverlays.get(0);	//only object is the ItemizedOverlay
     	OverlayItem item = itemOverlay.getItem(index);
@@ -92,6 +115,11 @@ public class MapDemo extends MapActivity {
         alert.setCanceledOnTouchOutside(true);
         alert.show();
     }
+    
+    public void updateList(){
+    	
+    }
+    
     public void getInfo(){
     	
     }

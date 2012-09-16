@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import com.dropbox.client2.DropboxAPI;
@@ -45,6 +46,8 @@ public class BackgroundService extends Service {
 	public DropboxAPI<AndroidAuthSession> mDBApi;
 	private Entry secretList;
 	private float DROPPOINT_DISTANCE = 10;
+	private float VIEW_DISTANCE = 10000;
+	private ArrayList<String> nearbyNotes = new ArrayList<String>();
 
 	// Unique Identification Number for the Notification.
 	// We use it on Notification start, and to cancel it.
@@ -67,7 +70,12 @@ public class BackgroundService extends Service {
 				"/mnt/sdcard/Android/data/com.pennapps.vnd.ffling");
 		if (!directories.exists())
 			directories.mkdirs();
-
+		
+		File directories2 = new File(
+				"/mnt/sdcard/Android/data/com.pennapps.vnd.ffling/nearby");
+		if (!directories2.exists())
+			directories2.mkdirs();
+		
 		myLocation.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60, 0,
 				locationListener);
 	}
@@ -90,8 +98,10 @@ public class BackgroundService extends Service {
 
 		public void onLocationChanged(Location locFromGps) {
 			// Log.i("DbAuthLog", "Getting updates!", null);
-			// sendBroadcast(new Intent("CHANGE"));
 			getShitDone();
+			Intent intent = new Intent("Loc Changed");
+	        intent.putStringArrayListExtra("nearby_list", nearbyNotes);
+	        sendBroadcast(intent);
 		}
 
 		public void onProviderDisabled(String provider) {
@@ -117,7 +127,7 @@ public class BackgroundService extends Service {
 	public void onDestroy() {
 
 	}
-
+	
 	@Override
 	public IBinder onBind(Intent intent) {
 		return mBinder;
@@ -139,41 +149,53 @@ public class BackgroundService extends Service {
 						StringTokenizer st = new StringTokenizer(filename, "~");
 						double TempLat = Double.parseDouble(st.nextToken());
 						double TempLong = Double.parseDouble(st.nextToken());
+						
 						Location tempPos = new Location("placeholder");
 						tempPos.setLatitude(TempLat);
 						tempPos.setLongitude(TempLong);
-						if (myLocation.getLastKnownLocation(
-								LocationManager.GPS_PROVIDER).distanceTo(
-								tempPos) < DROPPOINT_DISTANCE) {
-						Log.i("DbExampleLog", "right before if");
-							//if (true) {
-							// Get file.
+						
+						if (myLocation.getLastKnownLocation(LocationManager.GPS_PROVIDER).distanceTo(tempPos) < VIEW_DISTANCE){
+							/*File fileNear = new File("/mnt/sdcard/Android/data/com.pennapps.vnd.ffling/nearby"+ secretList.contents.get(i)
+																												.fileName() + ".txt");
+							*/
+							nearbyNotes.add(TempLat + ", " + TempLong);
+							
+							
 							FileOutputStream outputStream = null;
-							try {
-								File file = new File(
-										"/mnt/sdcard/Android/data/com.pennapps.vnd.ffling/"
-												+ secretList.contents.get(i)
-														.fileName() + ".txt");
-								outputStream = new FileOutputStream(file);
-								DropboxFileInfo info = mDBApi.getFile(
-										"/"
-												+ secretList.contents.get(i)
-														.fileName(), null,
-										outputStream, null);
-								Log.i("DbExampleLog", "The file's rev is: "
-										+ info.getMetadata().rev);
-								mDBApi.delete("/"
-										+ secretList.contents.get(i).fileName());
-							} catch (DropboxException e) {
-								Log.e("DbExampleLog",
-										"Something went wrong while downloading.");
-							} catch (FileNotFoundException e) {
-								Log.e("DbExampleLog", "File not found.");
-							} finally {
-								if (outputStream != null) {
-									try {
-										outputStream.close();
-									} catch (IOException e) {
+							if (myLocation.getLastKnownLocation(
+									LocationManager.GPS_PROVIDER).distanceTo(
+									tempPos) < DROPPOINT_DISTANCE) {
+							Log.i("DbExampleLog", "right before if");
+								//if (true) {
+								// Get file.
+								
+	
+								try {
+									File file = new File(
+											"/mnt/sdcard/Android/data/com.pennapps.vnd.ffling/"
+													+ secretList.contents.get(i)
+															.fileName() + ".txt");
+									outputStream = new FileOutputStream(file);
+									DropboxFileInfo info = mDBApi.getFile(
+											"/"
+													+ secretList.contents.get(i)
+															.fileName(), null,
+											outputStream, null);
+									Log.i("DbExampleLog", "The file's rev is: "
+											+ info.getMetadata().rev);
+									mDBApi.delete("/"
+											+ secretList.contents.get(i).fileName());
+								} catch (DropboxException e) {
+									Log.e("DbExampleLog",
+											"Something went wrong while downloading.");
+								} catch (FileNotFoundException e) {
+									Log.e("DbExampleLog", "File not found.");
+								} finally {
+									if (outputStream != null) {
+										try {
+											outputStream.close();
+										} catch (IOException e) {
+										}
 									}
 								}
 							}
@@ -234,6 +256,10 @@ public class BackgroundService extends Service {
 		mNM.notify(NOTIFICATION, notification);
 	}
 
+	public ArrayList<String> getNearbyNotes(){
+		return nearbyNotes;
+	}
+	
 	public Entry getList() {
 		return secretList;
 	}
