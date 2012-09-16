@@ -44,8 +44,8 @@ public class MapDemo extends MapActivity {
 			ArrayList <String> strs = getIntent().getStringArrayListExtra("stock_list");
 			for(String str: strs){
 				StringTokenizer st = new StringTokenizer(str, ", ");
-				int TempLat = (int)(Double.parseDouble(st.nextToken())*14);
-				int TempLong = (int)(Double.parseDouble(st.nextToken())*14);
+				double TempLat = Double.parseDouble(st.nextToken())*14;
+				double TempLong = Double.parseDouble(st.nextToken())*14;
 				Location tempLoc = new Location("");
 				tempLoc.setLatitude(TempLat);
 				tempLoc.setLongitude(TempLong);
